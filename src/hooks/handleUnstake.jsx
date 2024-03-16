@@ -21,7 +21,6 @@ const handleUnstake = (poolID, onUnstake) => {
             console.log("Unstaked amount:", amount);
             console.log("Timestamp:", timestamp);
             
-            // Call a callback function if provided
             if (onUnstake) {
                 onUnstake(poolID, account, amount, timestamp);
             }

@@ -4,6 +4,7 @@ import { isSupportedChain } from "../Utils";
 import { isAddress } from "ethers";
 import { getProvider } from "../Constants/providers";
 import { getStakingPoolContract } from "../Constants/contracts";
+import { toast } from "react-toastify";
 
 
 const handleGetUserPoolRewardsPerSecond = (poolID,account) => {
@@ -11,7 +12,7 @@ const handleGetUserPoolRewardsPerSecond = (poolID,account) => {
     const { walletProvider } = useWeb3ModalProvider();
 
   return useCallback(async () => {
-        if (!isSupportedChain(chainId)) return console.error("Wrong network");
+        if (!isSupportedChain(chainId)) return toast.error("Wrong network");
         // if (!isAddress(address)) return console.error("Invalid address");
         const readWriteProvider = getProvider(walletProvider);
         const signer = await readWriteProvider.getSigner();
@@ -27,10 +28,10 @@ const handleGetUserPoolRewardsPerSecond = (poolID,account) => {
             console.log("receipt: ", receipt);
 
             if (receipt.status) {
-                return console.log("Your reward persec is !!!");
+                return toast.success("Your reward persec is !!!");
             }
 
-            console.log("Reward could not be calculated. Failed!!!");
+            toast.error("Reward could not be calculated. Failed!!!");
         } catch (error) {
             console.error(
                 "error: ",

@@ -5,6 +5,7 @@ import { isSupportedChain } from "../Utils";
 import { isAddress } from "ethers";
 import { getProvider } from "../Constants/providers";
 import { getStakingPoolContract } from "../Constants/contracts";
+import { toast } from 'react-toastify';
 
 
 const handleGetUserStakeBalance = (poolID,account) => {
@@ -12,7 +13,7 @@ const handleGetUserStakeBalance = (poolID,account) => {
     const { walletProvider } = useWeb3ModalProvider();
 
     return useCallback(async () => {
-        if (!isSupportedChain(chainId)) return console.error("Wrong network");
+        if (!isSupportedChain(chainId)) return toast.error("Wrong network");
         // if (!isAddress(address)) return console.error("Invalid address");
         const readWriteProvider = getProvider(walletProvider);
         const signer = await readWriteProvider.getSigner();
@@ -28,10 +29,10 @@ const handleGetUserStakeBalance = (poolID,account) => {
             console.log("receipt: ", receipt);
 
             if (receipt.status) {
-                return console.log("Your stake balance is ... !!");
+                return toast.success("Your stake balance is ... !!");
             }
 
-            console.log("Stake operation failed!");
+            toast.error("Stake operation failed!");
         } catch (error) {
             console.error(
                 "error: ",

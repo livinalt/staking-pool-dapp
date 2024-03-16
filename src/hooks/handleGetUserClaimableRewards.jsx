@@ -4,6 +4,7 @@ import { isSupportedChain } from "../Utils";
 import { isAddress } from "ethers";
 import { getProvider } from "../Constants/providers";
 import { getStakingPoolContract } from "../Constants/contracts";
+import { toast } from "react-toastify";
 
 
 const handleGetUserClaimableRewards = (poolID, stakerAccount) => {
@@ -13,7 +14,6 @@ const handleGetUserClaimableRewards = (poolID, stakerAccount) => {
 
     return useCallback(async () => {
         if (!isSupportedChain(chainId)) return console.error("Wrong network");
-        // if (!isAddress(address)) return console.error("Invalid address");
         const readWriteProvider = getProvider(walletProvider);
         const signer = await readWriteProvider.getSigner();
 
@@ -28,10 +28,10 @@ const handleGetUserClaimableRewards = (poolID, stakerAccount) => {
             console.log("receipt: ", receipt);
 
             if (receipt.status) {
-                return console.log(`Your claimable Pool reward is ...!!!`);
+                return toast.success(`Your claimable Pool reward is ...!!!`);
             }
 
-            console.log(`Couldn't get your claimable Pool reward!!`);
+            toast.error(`Couldn't get your claimable Pool reward!!`);
         } catch (error) {
             console.error(
                 "error: ",

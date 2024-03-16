@@ -3,13 +3,14 @@ import { useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers/rea
 import { isSupportedChain } from "../Utils";
 import { getProvider } from "../Constants/providers";
 import { getStakingPoolContract } from "../Constants/contracts";
+import { toast } from "react-toastify";
 
 const handleStake = (poolID, amount) => {
     const { chainId } = useWeb3ModalAccount();
     const { walletProvider } = useWeb3ModalProvider();
 
     return useCallback(async () => {
-        if (!isSupportedChain(chainId)) return console.error("Wrong network");
+        if (!isSupportedChain(chainId)) return toast.error("Wrong network");
         const readWriteProvider = getProvider(walletProvider);
         const signer = await readWriteProvider.getSigner();
         const contract = getStakingPoolContract(signer);
@@ -21,12 +22,12 @@ const handleStake = (poolID, amount) => {
             console.log("receipt: ", receipt);
 
             if (receipt.status) {
-                console.log("Staking operation successful!!!");
+                toast.success("Staking operation successful!!!");
             } else {
-                console.log("Stake operation failed!");
+                toast.error("Stake operation failed!");
             }
         } catch (error) {
-            console.error("error: ", error.reason || "An unknown error occurred");
+            toast.error("error: ", error.reason || "An unknown error occurred");
         }
     }, [chainId, walletProvider]);
 };
