@@ -11,7 +11,7 @@ const handleClaimRewards = (poolID, onClaimReward) => {
 
     useEffect(() => {
         const claimRewardsAndEmitEvent = async () => {
-            if (!isSupportedChain(chainId)) return console.error("Wrong network");
+            if (!isSupportedChain(chainId)) return toast.error("Wrong network");
 
             const readWriteProvider = getProvider(walletProvider);
             const signer = await readWriteProvider.getSigner();
@@ -23,7 +23,7 @@ const handleClaimRewards = (poolID, onClaimReward) => {
                 const receipt = await transaction.wait();
 
                 if (receipt.status) {
-                    console.log("Reward claimed successfully!!!");
+                    toast.success("Reward claimed successfully!!!");
 
                     // Emit a custom event if onClaimReward callback is provided
                     if (onClaimReward) {

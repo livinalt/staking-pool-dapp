@@ -2,13 +2,14 @@ import { useWeb3ModalAccount, useWeb3ModalProvider} from "@web3modal/ethers/reac
 import { isSupportedChain } from "../Utils";
 import { getProvider } from "../Constants/providers";
 import { getStakingPoolContract } from "../Constants/contracts";
+import { toast } from "react-toastify";
 
 const handleCalculateRewardsPerSeconds = () => {
     const { chainId } = useWeb3ModalAccount();
     const { walletProvider } = useWeb3ModalProvider();
 
     return async (poolID, stakedAmount) => {
-        if (!isSupportedChain(chainId)) return console.error("Wrong network");
+        if (!isSupportedChain(chainId)) return toast.error("Wrong network");
 
         const readWriteProvider = getProvider(walletProvider);
         const signer = await readWriteProvider.getSigner();
@@ -16,19 +17,19 @@ const handleCalculateRewardsPerSeconds = () => {
         const contract = getStakingPoolContract(signer);
 
         try {
-            const transaction = await contract._calculateRewardperSecond(poolID, stakedAmount);
-            console.log("transaction: ", transaction);
+            const txn = await contract._calculateRewardperSecond(poolID, stakedAmount);
+            console.log("txn: ", txn);
 
-            const receipt = await transaction.wait();
+            const receipt = await txn.wait();
             console.log("receipt: ", receipt);
 
             if (receipt.status) {
-                console.log("Your calculated reward !!!");
+                toast.success("Your calculated reward !!!");
             } else {
-                console.log("Reward could not be calculated. Failed!!!");
+                toast.error("Reward could not be calculated. Failed!!!");
             }
         } catch (error) {
-            console.error(
+            toast.error(
                 "error: ",
                 error.reason || "An unknown error occurred"
             );

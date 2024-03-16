@@ -3,6 +3,7 @@ import { useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers/rea
 import { isSupportedChain } from "../Utils";
 import { getProvider } from "../Constants/providers";
 import { getStakingPoolContract } from "../Constants/contracts";
+import { toast } from "react-toastify";
 
 const handleCreatePool = (rewardRate, onPoolCreated) => {
     const { chainId } = useWeb3ModalAccount();
@@ -10,7 +11,7 @@ const handleCreatePool = (rewardRate, onPoolCreated) => {
 
     useEffect(() => {
         const createPoolAndListenForEvents = async () => {
-            if (!isSupportedChain(chainId)) return console.error("Wrong network");
+            if (!isSupportedChain(chainId)) return toast.error("Wrong network");
 
             const readWriteProvider = getProvider(walletProvider);
             const signer = await readWriteProvider.getSigner();
@@ -26,12 +27,12 @@ const handleCreatePool = (rewardRate, onPoolCreated) => {
                 console.log("receipt: ", receipt);
 
                 if (receipt.status) {
-                    console.log("Pool created successfully!!!");
+                    toast.success("Pool created successfully!!!");
                 } else {
-                    alert("Pool creation failed!");
+                    toast.error("Pool creation failed!");
                 }
             } catch (error) {
-                console.error(
+                toast.error(
                     "error: ",
                     error.reason || "An unknown error occurred"
                 );
@@ -48,7 +49,6 @@ const handleCreatePool = (rewardRate, onPoolCreated) => {
             console.log("Creation timestamp:", at);
             console.log("Created by:", by);
             
-            // Call a callback function if provided
             if (onPoolCreated) {
                 onPoolCreated(poolID, poolReward, at, by);
             }
